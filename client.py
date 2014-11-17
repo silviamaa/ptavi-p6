@@ -23,17 +23,18 @@ else:
 USER = parameters.split(':')[0]
 IP = USER.split('@')[1]
 PORT = int(parameters.split(':')[1])
+VERSION = "SIP/2.0"
 
 # Contenido que vamos a enviar
-REQUEST = METHOD + " " + "sip:" + USER + " SIP/2.0\r\n"
+request = METHOD + " " + "sip:" + USER + " " + VERSION + "\r\n"
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 my_socket.connect((SERVER, PORT))
 
-print "Enviando:\n" + REQUEST
-my_socket.send(REQUEST)
+print "Enviando:\n" + request
+my_socket.send(request)
 try:
     data = my_socket.recv(1024)
 except socket.error:
@@ -41,6 +42,16 @@ except socket.error:
     raise SystemExit
 
 print 'Recibido:\n' + data
+
+# Si recibimos confirmación de INVITE envíamos ACK
+response = VERSION + " 100 Trying\r\n\r\n"
+response += VERSION + " 180 Ring\r\n\r\n"
+response += VERSION + " 200 OK\r\n\r\n"
+if data == response:
+    request = "ACK " + "sip:" + USER + " " + VERSION + "\r\n"
+    print "Enviando:\n" + request
+    my_socket.send(request)
+
 print "Terminando socket..."
 
 # Cerramos todo
