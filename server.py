@@ -19,7 +19,10 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
         Método para recibir en el manejador y establecer comunicación SIP
         """
         # Escribe dirección y puerto del cliente (de tupla client_address)
-        self.wfile.write("Hemos recibido tu peticion")
+        ip = str(self.client_address[0])
+        port = str(self.client_address[1])
+        print "IP del cliente: " + ip + "| Puerto del cliente: " + port
+
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read()
@@ -33,22 +36,29 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
                 method = parameters[0]
                 user = parameters[1].split(':')[1]
                 version = parameters[2]
-                
+
                 if method == 'INVITE':
-                    print method
+                    # Enviamos respuesta en una línea para simplificar
+                    response = version + " 100 Trying\r\n\r\n"
+                    response += version + " 180 Ring\r\n\r\n"
+                    response += version + " 200 OK\r\n\r\n"
+                    self.wfile.write(response)
                 elif method == 'BYE':
-                    print method
+                    self.wfile.write(version + " 200 OK\r\n\r\n")
+                elif method == 'ACK':
+                    pass # --------------------------------------------------- Falta implementar
+                else:
+                    self.wfile.write(version +
+                                     " 405 Method Not Allowed\r\n\r\n")
 
 if __name__ == "__main__":
-    try:
+
+    if len(sys.argv) != 4 or not os.path.isfile(sys.argv[3]):
+        sys.exit("Usage: python server.py IP port audio_file")
+    else:
         IP = sys.argv[1]
         PORT = int(sys.argv[2])
         AUDIO_FILE = sys.argv[3]
-        if not os.path.isfile(AUDIO_FILE):
-            raise IndexError
-    except IndexError:
-        print ("Usage: python server.py IP port audio_file")
-        raise SystemExit
 
     # Creamos servidor de eco y escuchamos
     serv = SocketServer.UDPServer(("", PORT), EchoHandler)
