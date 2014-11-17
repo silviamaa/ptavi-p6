@@ -22,6 +22,9 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
         ip = str(self.client_address[0])
         port = str(self.client_address[1])
         print "IP del cliente: " + ip + "| Puerto del cliente: " + port
+        
+        methods = ('CANCEL', 'OPTIONS', 'REGISTER', 'PRACK', 'SUBSCRIBE',
+                   'NOTIFY', 'PUBLISH', 'INFO', 'REFER', 'MESSAGE', 'UPDATE')
 
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
@@ -37,6 +40,11 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
                 user = parameters[1].split(':')[1]
                 version = parameters[2]
 
+                not_allowed = 0
+                for m in methods:
+                    if method == m:
+                        not_allowed = 1
+
                 if method == 'INVITE':
                     # Enviamos respuesta en una línea para simplificar
                     response = version + " 100 Trying\r\n\r\n"
@@ -47,9 +55,11 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
                     self.wfile.write(version + " 200 OK\r\n\r\n")
                 elif method == 'ACK':
                     pass # --------------------------------------------------- Falta implementar
-                else:
+                elif not_allowed:
                     self.wfile.write(version +
                                      " 405 Method Not Allowed\r\n\r\n")
+                else:
+                    self.wfile.write(version + " 400 Bad Request\r\n\r\n")
 
 if __name__ == "__main__":
 
