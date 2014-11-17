@@ -19,12 +19,9 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
         Método para recibir en el manejador y establecer comunicación SIP
         """
         # Escribe dirección y puerto del cliente (de tupla client_address)
-        ip = str(self.client_address[0])
-        port = str(self.client_address[1])
-        print "IP del cliente: " + ip + "| Puerto del cliente: " + port
-        
-        methods = ('CANCEL', 'OPTIONS', 'REGISTER', 'PRACK', 'SUBSCRIBE',
-                   'NOTIFY', 'PUBLISH', 'INFO', 'REFER', 'MESSAGE', 'UPDATE')
+        client_ip = str(self.client_address[0])
+        client_port = str(self.client_address[1])
+        print "IP cliente: " + client_ip + "| Puerto cliente: " + client_port
 
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
@@ -34,19 +31,15 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
             if not line:
                 break
             else:
-                print "El cliente nos manda " + line
+                # Evaluación de los parámetros que nos envía el cliente
+                print "Recibido:\n" + line
                 parameters = line.split()
                 method = parameters[0]
                 user = parameters[1].split(':')[1]
                 version = parameters[2]
 
-                not_allowed = 0
-                for m in methods:
-                    if method == m:
-                        not_allowed = 1
-
+                # Evaluación del método que nos envía el cliente
                 if method == 'INVITE':
-                    # Enviamos respuesta en una línea para simplificar
                     response = version + " 100 Trying\r\n\r\n"
                     response += version + " 180 Ring\r\n\r\n"
                     response += version + " 200 OK\r\n\r\n"
@@ -54,23 +47,27 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
                 elif method == 'BYE':
                     self.wfile.write(version + " 200 OK\r\n\r\n")
                 elif method == 'ACK':
-                    pass # --------------------------------------------------- Falta implementar
-                elif not_allowed:
+                    # --------------------- Envío RTP -------------------------
+                    toRun = "./mp32rtp -i " + str(client_ip) + " -p 23032  < "
+                    toRun += AUDIO_FILE
+                    os.system(toRun)
+                    print "Enviado contenido RTP al cliente"
+                else:
                     self.wfile.write(version +
                                      " 405 Method Not Allowed\r\n\r\n")
-                else:
-                    self.wfile.write(version + " 400 Bad Request\r\n\r\n")
+
 
 if __name__ == "__main__":
 
+    # Evaluación de parámetros de la línea de comandos
     if len(sys.argv) != 4 or not os.path.isfile(sys.argv[3]):
         sys.exit("Usage: python server.py IP port audio_file")
     else:
-        IP = sys.argv[1]
-        PORT = int(sys.argv[2])
+        SERVER_IP = sys.argv[1]
+        SERVER_PORT = int(sys.argv[2])
         AUDIO_FILE = sys.argv[3]
 
     # Creamos servidor de eco y escuchamos
-    serv = SocketServer.UDPServer(("", PORT), EchoHandler)
+    serv = SocketServer.UDPServer(("", SERVER_PORT), EchoHandler)
     print "Listening..."
     serv.serve_forever()
