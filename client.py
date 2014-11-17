@@ -13,12 +13,12 @@ import sys
 SERVER = 'localhost'
 
 # Parámetros del usuario.
-try:
+
+if len(sys.argv) != 3:
+    sys.exit("Usage: python client.py method receiver@IP:SIPport")
+else:
     METHOD = sys.argv[1].upper()
     parameters = sys.argv[2]
-except IndexError:
-    print ("Usage: python client.py method receiver@IP:SIPport")
-    raise SystemExit
 
 USER = parameters.split(':')[0]
 IP = USER.split('@')[1]
@@ -40,7 +40,7 @@ except socket.error:
     print ("Error: No server listening at " + IP + " port " + str(PORT))
     raise SystemExit
 
-print 'Recibido -- ', data
+print 'Recibido:\n' + data
 print "Terminando socket..."
 
 # Cerramos todo
