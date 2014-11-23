@@ -13,17 +13,17 @@ import sys
 SERVER = 'localhost'
 
 # Parámetros del usuario.
-
-if len(sys.argv) != 3:
-    sys.exit("Usage: python client.py method receiver@IP:SIPport")
-else:
+try:
     METHOD = sys.argv[1].upper()
     parameters = sys.argv[2]
 
-USER = parameters.split(':')[0]
-IP = USER.split('@')[1]
-PORT = int(parameters.split(':')[1])
-VERSION = "SIP/2.0"
+    USER = parameters.split(':')[0]
+    IP = USER.split('@')[1]
+    PORT = int(parameters.split(':')[1])
+    VERSION = "SIP/2.0"
+except:
+    print ("Usage: python client.py method receiver@IP:SIPport")
+    raise SystemExit
 
 # Contenido que vamos a enviar
 request = METHOD + " " + "sip:" + USER + " " + VERSION + "\r\n\r\n"
