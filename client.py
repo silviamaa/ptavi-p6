@@ -36,17 +36,18 @@ if (METODO == "INVITE"):
     print "Enviando: " + MENSAJE
     my_socket.send(MENSAJE + '\r\n')
     
-    #Compruebo que el puerto está abierto
-    try:    
-        data = my_socket.recv(1024)
-        print 'Recibido -- \r\n\r\n', data
-    except socket.error: 
-        sys.exit("Error: No server listening at " + IPreceptor + " port " + puertoSIP);
+#Compruebo que el puerto está abierto
+try:    
+    data = my_socket.recv(1024)
+    print 'Recibido -- \r\n\r\n', data
+except socket.error: 
+    sys.exit("Error: No server listening at " + IPreceptor + " port " +
+              puertoSIP);
 
-    if (data == "100 TRYING\r\n\r\n180 RING\r\n\r\nSIP/2.0 200 OK\r\n\r\n"):
-        #Se envía el ACK
-        mensaje_ack = "ACK" + " sip:" + login + " SIP/2.0\r\n"
-        my_socket.send(mensaje_ack + '\r\n')
+if (data == "100 TRYING\r\n\r\n180 RING\r\n\r\nSIP/2.0 200 OK\r\n\r\n"):
+    #Se envía el ACK
+    mensaje_ack = "ACK" + " sip:" + login + " SIP/2.0\r\n"
+    my_socket.send(mensaje_ack + '\r\n')
 
 if (METODO == "BYE"):
     print "Enviando: " + MENSAJE
