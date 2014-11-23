@@ -13,7 +13,8 @@ puerto = sys.argv[2]
 fichero_audio = sys.argv[3]
 
 if len(sys.argv) != 4:
-    sys.exit("Usage: python server.py " +ip+ " " +puerto+ " " +fichero_audio);
+    sys.exit("Usage: python server.py " + ip + " " + puerto + " " +
+              fichero_audio);
 
 class EchoHandler(SocketServer.DatagramRequestHandler):
     """
@@ -33,15 +34,18 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
             elif (line1[0] == "ACK"):
                 print "Se recibe el ACK"
                 #ENVIAMOS EL AUDIO
-                reproducir = './mp32rtp -i ' + ip +' -p '+ puerto +' < '+ fichero_audio
-                print "Listening... ", reproducir
+                reproducir = ('./mp32rtp -i ' + ip + ' -p ' + puerto + ' < ' +
+                             fichero_audio)
+                print "Listening... " #, reproducir
                 os.system(reproducir)
                 print "Se ha terminado de reproducir"
             elif (line1[0] == "BYE"):
                 print "Se recibe el BYE"
                 self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
+            else:
+                print "SIP/2.0 405 Method Not Allowed"
             # Si no hay más líneas salimos del bucle infinito
-            if not line:
+            if not line1:
                 break
 
 if __name__ == "__main__":
