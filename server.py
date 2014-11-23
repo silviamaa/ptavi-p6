@@ -48,10 +48,10 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
                     self.wfile.write(version + " 200 OK\r\n\r\n")
                 elif method == 'ACK':
                     # --------------------- Envío RTP -------------------------
-                    toRun = "./mp32rtp -i " + str(client_ip) + " -p 23032  < "
-                    toRun += AUDIO_FILE
+                    toRun = "./mp32rtp -i 127.0.0.1 -p 23032 < " + AUDIO_FILE
+                    print "Enviando contenido RTP al cliente..."
                     os.system(toRun)
-                    print "Enviado contenido RTP al cliente"
+                    print "Finalizado envío RTP"
                 else:
                     self.wfile.write(version +
                                      " 405 Method Not Allowed\r\n\r\n")
@@ -60,12 +60,15 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
 if __name__ == "__main__":
 
     # Evaluación de parámetros de la línea de comandos
-    if len(sys.argv) != 4 or not os.path.isfile(sys.argv[3]):
-        sys.exit("Usage: python server.py IP port audio_file")
-    else:
+    try:
         SERVER_IP = sys.argv[1]
         SERVER_PORT = int(sys.argv[2])
         AUDIO_FILE = sys.argv[3]
+        if not os.path.isfile(AUDIO_FILE):
+            sys.exit("Usage: python server.py IP port audio_file")
+    except:
+        print ("Usage: python server.py IP port audio_file")
+        raise SystemExit
 
     # Creamos servidor de eco y escuchamos
     serv = SocketServer.UDPServer(("", SERVER_PORT), EchoHandler)
