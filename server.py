@@ -50,6 +50,9 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
                 self.wfile.write('SIP/2.0 400 Bad Request' + '\r\n\r\n')
 
 if __name__ == "__main__":
+    """
+    Lanzando servidor SIP
+    """
     Metodos = ['INVITE', 'ACK', 'BYE']
     serv = SocketServer.UDPServer(("", PUERTO), EchoHandler)
     print "Listening..."
