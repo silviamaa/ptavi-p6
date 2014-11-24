@@ -32,6 +32,7 @@ except socket.error:
     sys.exit("Error:No server listening at " + IP_R + " port " + str(PUERTO_R))
 
 print data
+#Enviamos un ACK cuando recibimos rcv_invite
 rcv_invite = data.split('\r\n\r\n')[0:-1]
 if rcv_invite == ['SIP/2.0 100 Trying', 'SIP/2.0 180 Ringing',
                   'SIP/2.0 200 OK']:
