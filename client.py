@@ -17,15 +17,15 @@ try:
     method = sys.argv[1].upper()
     parameters = sys.argv[2]
 
-    address = parameters.split(':')[0]
-    IP = address.split('@')[1]
+    ADDRESS = parameters.split(':')[0]
+    IP = ADDRESS.split('@')[1]
     PORT = int(parameters.split(':')[1])
 except:
     print ("Usage: python client.py method receiver@IP:SIPport")
     raise SystemExit
 
 # Contenido que vamos a enviar
-request = method + " " + PROTOCOL + ":" + address + " " + VERSION + "\r\n\r\n"
+request = method + " " + PROTOCOL + ":" + ADDRESS + " " + VERSION + "\r\n\r\n"
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -50,7 +50,7 @@ response2 = "SIP/2.0 100 Trying\r\n\r\n" + "SIP/2.0 180 Ringing\r\n\r\n"\
           + "SIP/2.0 200 OK\r\n\r\n"
 if data == response1 or data == response2:
     method = 'ACK'
-    request = method + " " + PROTOCOL + ":" + address + " " + VERSION\
+    request = method + " " + PROTOCOL + ":" + ADDRESS + " " + VERSION\
               + "\r\n\r\n"
     my_socket.send(request)
     print "Enviado:\n" + request
