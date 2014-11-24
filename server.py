@@ -46,6 +46,8 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
             elif (line1[0] == "BYE"):
                 print "Se recibe el BYE"
                 self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
+            elif len(line1) != 3:
+                print "SIP/2.0 400 Bad Request"
             else:
                 print "SIP/2.0 405 Method Not Allowed"
 
