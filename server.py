@@ -8,13 +8,14 @@ import SocketServer
 import os
 
 
-try: 
+try:
     UA = sys.argv[0] = 'server.py'
     IP = sys.argv[1]
     PUERTO = int(sys.argv[2])
     FICHERO = sys.argv[3]
 except IndexError:
     sys.exit("Usage: python server.py IP port audio_file")
+
 
 class EchoHandler(SocketServer.DatagramRequestHandler):
     """
@@ -35,7 +36,7 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
                 self.wfile.write('SIP/2.0 405 Method Not Allowed' + '\r\n\r\n')
             elif Metod == 'INVITE':
                 rcv_invite = 'SIP/2.0 100 Trying' + '\r\n\r\n'
-                rcv_invite += 'SIP/2.0 180 Ring' + '\r\n\r\n'
+                rcv_invite += 'SIP/2.0 180 Ringing' + '\r\n\r\n'
                 rcv_invite += 'SIP/2.0 200 OK' + '\r\n\r\n'
                 self.wfile.write(rcv_invite)
             elif Metod == 'ACK':
