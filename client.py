@@ -29,13 +29,14 @@ my_socket.send(LINE)
 try:
     data = my_socket.recv(1024)
 except socket.error:
-    sys.exit("Error: No server listening at " + IP_R + " port " + str(PUERTO_R))
+    sys.exit("Error:No server listening at " + IP_R + " port " + str(PUERTO_R))
 
 print data
 rcv_invite = data.split('\r\n\r\n')[0:-1]
-if rcv_invite == ['SIP/2.0 100 Trying', 'SIP/2.0 180 Ring', 'SIP/2.0 200 OK']:
+if rcv_invite == ['SIP/2.0 100 Trying', 'SIP/2.0 180 Ringing',
+                  'SIP/2.0 200 OK']:
     METOD = 'ACK'
-    NEWLINE =  METOD + ' sip:' + RECEPTOR + '@' + IP_R + ' SIP/2.0\r\n\r\n'
+    NEWLINE = METOD + ' sip:' + RECEPTOR + '@' + IP_R + ' SIP/2.0\r\n\r\n'
     print '\r\n\r\n' + "Enviando: " + NEWLINE
     my_socket.send(NEWLINE)
     data = my_socket.recv(1024)
