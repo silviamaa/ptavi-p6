@@ -93,6 +93,6 @@ if __name__ == "__main__":
         raise SystemExit
 
     # Creamos servidor de eco y escuchamos
-    serv = SocketServer.UDPServer(("", SERVER_PORT), EchoHandler)
+    serv = SocketServer.UDPServer((SERVER_IP, SERVER_PORT), EchoHandler)
     print "Listening..."
     serv.serve_forever()
