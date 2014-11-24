@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-15 -*-
 """
-Clase (y programa principal) para un servidor de eco en UDP simple
+Clase (y programa principal) para un servidor SIP
 """
 import sys
 import SocketServer
@@ -23,7 +23,6 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
     """
 
     def handle(self):
-        # Escribe dirección y puerto del cliente (de tupla client_address)
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read()
@@ -51,7 +50,6 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
                 self.wfile.write('SIP/2.0 400 Bad Request' + '\r\n\r\n')
 
 if __name__ == "__main__":
-    # Creamos servidor de eco y escuchamos
     Metodos = ['INVITE', 'ACK', 'BYE']
     serv = SocketServer.UDPServer(("", PUERTO), EchoHandler)
     print "Listening..."
