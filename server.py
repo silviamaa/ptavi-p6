@@ -14,7 +14,8 @@ fichero_audio = sys.argv[3]
 
 if len(sys.argv) != 4:
     sys.exit("Usage: python server.py " + ip + " " + puerto + " " +
-              fichero_audio);
+             fichero_audio)
+
 
 class EchoHandler(SocketServer.DatagramRequestHandler):
     """
@@ -39,7 +40,7 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
                 #enviamos audio
                 reproducir = ('./mp32rtp -i ' + ip + ' -p 23032 < ' +
                               fichero_audio)
-                print "Listening... " , reproducir
+                print "Listening... ", reproducir
                 os.system(reproducir)
                 print "Se ha terminado de reproducir"
                 self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
