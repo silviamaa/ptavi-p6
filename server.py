@@ -6,10 +6,15 @@ Clase (y programa principal) para un servidor de eco en UDP simple
 
 import SocketServer
 import sys
+import os
 
 ip = sys.argv[1]
 puerto = sys.argv[2]
+fichero_audio = sys.argv[3]
 
+if len(sys.argv) != 4:
+    sys.exit("Usage: python server.py " + ip + " " + puerto + " " +
+              fichero_audio);
 
 class EchoHandler(SocketServer.DatagramRequestHandler):
     """
@@ -17,20 +22,32 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
     """
 
     def handle(self):
-        # Escribe dirección y puerto del cliente (de tupla client_address)
-        #self.wfile.write("Hemos recibido tu peticion")
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read()
+            print line
             line1 = line.split()
-            if (line1[0] == "INVITE"):
-            	print "El cliente nos manda su login " + line1[1]
-            	self.wfile.write("100 TRYING\r\n\r\n" + "180 RING\r\n\r\n" +
-            	"SIP/2.0 200 OK\r\n\r\n")
-
             # Si no hay más líneas salimos del bucle infinito
-            if not line:
+            if not line1:
                 break
+            if (line1[0] == "INVITE"):
+                self.wfile.write("SIP/2.0 100 TRYING\r\n\r\n" +
+                                 "SIP/2.0 180 RINGING\r\n\r\n" +
+                                 "SIP/2.0 200 OK\r\n\r\n")
+            elif (line1[0] == "ACK"):
+                print "Se recibe el ACK"
+                #ENVIAMOS EL AUDIO
+                reproducir = ('./mp32rtp -i ' + ip + ' -p 23032 < ' +
+                              fichero_audio)
+                print "Listening... " , reproducir
+                os.system(reproducir)
+                print "Se ha terminado de reproducir"
+                self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
+            elif (line1[0] == "BYE"):
+                print "Se recibe el BYE"
+                self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
+            else:
+                print "SIP/2.0 405 Method Not Allowed"
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
