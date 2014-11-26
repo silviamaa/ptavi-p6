@@ -66,7 +66,7 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
                     print "Enviado:\n" + response
                 elif method == 'ACK':
                     # --------------------- Envío RTP -------------------------
-                    toRun = "./mp32rtp -i 127.0.0.1 -p 23032 < " + AUDIO_FILE
+                    toRun = "./mp32rtp -i" + client_ip + "-p 23032 < " + AUDIO_FILE
                     print "Enviando contenido RTP al cliente..."
                     os.system(toRun)
                     print "Finalizado envío RTP"
