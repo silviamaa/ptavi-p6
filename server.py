@@ -21,8 +21,8 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
     """
     server class
     """
-
     def handle(self):
+        client_ip = str(self.client_address[0])
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read()
@@ -33,12 +33,12 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
             if not line1:
                 break
             if (line1[0] == "INVITE"):
-                self.wfile.write("SIP/2.0 100 TRYING\r\n\r\n" +
-                                 "SIP/2.0 180 RINGING\r\n\r\n" +
+                self.wfile.write("SIP/2.0 100 Trying\r\n\r\n" +
+                                 "SIP/2.0 180 Ringing\r\n\r\n" +
                                  "SIP/2.0 200 OK\r\n\r\n")
             elif (line1[0] == "ACK"):
                 #enviamos audio
-                reproducir = ('./mp32rtp -i ' + ip + ' -p 23032 < ' +
+                reproducir = ('./mp32rtp -i ' + client_ip + ' -p 23032 < ' +
                               fichero_audio)
                 print "Listening... ", reproducir
                 os.system(reproducir)
