@@ -43,7 +43,7 @@ try:
 except socket.error:
     sys.exit("Error: No server listening at " + IPreceptor + " port " +
              puertoSIP)
-if (data == ("SIP/2.0 100 TRYING\r\n\r\n" + "SIP/2.0 180 RINGING\r\n\r\n" +
+if (data == ("SIP/2.0 100 Trying\r\n\r\n" + "SIP/2.0 180 Ringing\r\n\r\n" +
              "SIP/2.0 200 OK\r\n\r\n")):
     print 'Recibida respuesta INVITE-- \r\n\r\n', data
     #Se envía el ACK
