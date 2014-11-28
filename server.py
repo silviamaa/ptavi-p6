@@ -7,7 +7,6 @@ import sys
 import SocketServer
 import os
 
-
 try:
     UA = sys.argv[0] = 'server.py'
     IP = sys.argv[1]
