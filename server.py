@@ -55,9 +55,8 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
 
                 # Evaluación del método que nos envía el cliente
                 if method == 'INVITE':
-                    response = version + " 100 Trying\r\n\r\n"
-                    response += version + " 180 Ringing\r\n\r\n"
-                    response += version + " 200 OK\r\n\r\n"
+                    response = version + " 100 Trying\r\n\r\n" + version +
+                               " 180 Ringing\r\n\r\n" + version + " 200 OK\r\n\r\n"
                     self.wfile.write(response)
                     print "Enviado:\n" + response
                 elif method == 'BYE':
